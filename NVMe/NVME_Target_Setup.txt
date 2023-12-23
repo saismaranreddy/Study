@@ -1,0 +1,80 @@
+Setting Up Virtual NVME Disk in virtual-box
+--------------------------------------------
+1. Directly create/add NVME virtual Disk in storage settings of virtual-box Linux-VM.
+2. Create a new Linux VM in virtual-box onto the NVME Disk (This step is same like creating a Bootable OS Disk).
+// Note Booting a Linux-VM created on NVME virtual Disk is not supported in virtual-box for now.
+Experimental things:
+2. Add required partitioning scheme(GPT recommended)
+3. create partitions and set filesytem type as required(Ex: EFI file system).
+4. Format file system (refer internet).
+5. mount file system and add files if required (refer internet).
+
+References for partitioning:
+----------------------------
+#fdisk -l
+#fdisk /dev/nvme0n1
+
+https://cloudinfrastructureservices.co.uk/how-to-create-partitions-in-ubuntu-linux-using-fdisk/
+https://phoenixnap.com/kb/linux-create-partition
+
+Creating a qcow2 image and using it as NVME virtual Disk.
+----------------------------------------------------------
+
+// Command to create qcow2 image
+#qemu-img create -f qcow2 nvme-disk.qcow2img 10G
+// another example:
+#qemu-img create -f qcow2 nvme-disk.qcow2img 256M
+
+Mounting a qcow2 Disk image:
+----------------------------
+Reference: https://gist.github.com/shamil/62935d9b456a6f9877b5 
+
+Step 1 - Enable NBD on the Host
+#modprobe nbd max_part=8
+
+Step 2 - Connect the QCOW2 as network block device
+#qemu-nbd --connect=/dev/nbd0 /home/sai/nvme-disk.qcow2img
+
+Step 3 - Find The Virtual Machine Partitions
+#fdisk /dev/nbd0 -l
+
+Step 4 - Mount the partition from the VM
+#mount /dev/nbd0p1 /mnt/somepoint/
+
+Step 5 - add/modify files or do whatever you need.
+Step 6 - unmount and disconnect
+#umount /mnt/somepoint/
+#qemu-nbd --disconnect /dev/nbd0
+#rmmod nbd
+
+Adding qcow2 image as virtual Disk.
+------------------------------------
+1. Use #fdisk -l command for existing loop devices.
+2. Do not Use a loop device number that is listed by #fdisk -l or #ls /dev
+
+#losetup /dev/loop20 /home/sai/nvme-disk.qcow2img
+
+// update partition table.
+#partx -u /dev/loop20
+alternate if above one doesn't work.
+#partx -a /dev/loop20
+
+
+Load/invoke nvme kernel modules 
+-----------------------------------
+#modprobe nvme
+#modprobe nvme-tcp
+#modprobe nvmet
+#modprobe nvmet-tcp
+
+// command to verify nvme kernel modules.
+#lsmod|grep nvme
+
+Setup nvmet cli using information in following links.
+------------------------------------------------------
+https://git.infradead.org/users/hch/nvmetcli.git/blob/HEAD:/README
+https://git.infradead.org/users/hch/nvmetcli.git/blob/HEAD:/Documentation/nvmetcli.txt
+
+Setup NVME target
+------------------
+https://documentation.suse.com/sles/15-SP1/html/SLES-all/cha-nvmeof.html
