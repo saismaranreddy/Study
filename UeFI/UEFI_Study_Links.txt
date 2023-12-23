@@ -1,0 +1,51 @@
+https://edk2.groups.io/g/discuss/topic/build_uefi_application/75089017
+
+-------------------------------------------
+On 06/20/20 08:35, Peter Wiehe wrote:
+Hi, all!
+I have built EDK II and then OVMF. Now I want to develop an UEFI application with EDK II. Is there any documentation about that?
+I can give you three links:
+
+http://mid.mail-archive.com/E92EE9817A31E24EB0585FDF735412F5B8B381E8@ORSMSX113.amr.corp.intel.com
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=1734
+
+https://github.com/tianocore/edk2-libc/tree/master/AppPkg
+
+Basically I think you'd first have to decide the kind of entry point you
+want (UefiApplicationEntryPoint for a "standalone" UEFI application,
+ShellCEntryLib for a shell application (ShellAppMain()), or LibC for a
+standard C application (main())). Then you'd use whatever functionality
+is available (services and protocols from UEFI, libraries from edk2,
+standard C stuff from edk2-libc).
+-----------------------------------------
+
+Reference Links:
+
+https://github.com/tianocore/tianocore.github.io/wiki/UEFI-Driver-Writer%27s-Guide
+
+https://github.com/Kostr/UEFI-Lessons
+https://github.com/krinkinmu/krinkinmu.github.io
+
+https://blog.csdn.net/rikeyone/category_9275862.html
+https://blog.csdn.net/jiangwei0512/category_9274867.html
+https://blog.csdn.net/weixin_45279063/category_10932671.html
+
+https://blog.csdn.net/luobing4365/category_1360187.html
+https://github.com/luobing/uefi-practical-programming
+
+https://blog.csdn.net/lindahui2008/category_7344059.html
+https://blog.csdn.net/lindahui2008/article/details/78796550
+
+https://github.com/zhenghuadai/uefi-programming
+http://www.lab-z.com/iof/
+
+https://github.com/manojkumarpaladugu/UEFI-BIOS-Development/blob/master/docs/index.md
+https://github-wiki-see.page/m/manojkumarpaladugu/UEFI-BIOS-Development/wiki/10_Protocols-and-Handles
+https://github.com/manojkumarpaladugu/UEFI-BIOS-Development/wiki/10_Protocols-and-Handles
+
+https://sites.google.com/site/uefiforth/bios
+https://joshfinley.github.io/uefi-development-and-bootkits/
+https://github.com/safayetahmedatge/efitutorial
+https://github.com/safayetahmedatge/efitutorial/blob/master/pages/section2/section2.md
+https://github.com/samerhaj/uefi_drivers/tree/master/UsbNetworking
